@@ -9,7 +9,7 @@ from scipy.special import erf
 
 
 class Network(object):
-    def __init__(self, sizes, polyorders, non_linearity = "sigmoid"):
+    def __init__(self, sizes, polyorders=None, non_linearity = "sigmoid"):
         """The list ``sizes`` contains the number of neurons in the
         respective layers of the network. The list ``polyorders``
         contains the order of the polynomials used in the connections
@@ -20,23 +20,27 @@ class Network(object):
         and the third layer 1 neuron. The connections between the first
         and second layer would be fourth-order polynomials, and the
         connections between the second and third layer would be
-        12th-order polynomials.The biases and weights for the
+        12th-order polynomials. If polyorders is not supplied, it is
+        assumed to be all ones. The biases and weights for the
         network are initialized randomly, using a Gaussian
         distribution with mean 0, and variance 1.  Note that the first
         layer is assumed to be an input layer, and by convention we
         won't set any biases for those neurons, since biases are only
         ever used in computing the outputs from later layers."""
-        if np.isin(True, np.array(polyorders)<1):
-            raise ValueError("Argument polyorders must have positive elements!")
+
         self.num_layers = len(sizes)
         self.sizes = sizes
         self.innums = self.sizes[:-1]
+        # Set polyorders to all ones if it's unspecified.
+        self.polyorders = polyorders if polyorders!=None else [1]*(len(sizes)-1)
+        if np.isin(True, np.array(self.polyorders)<1):
+            raise ValueError("Argument polyorders must have positive elements!")
         # Zero-order weights. Not worth making a matrix out of.
         self.biases = np.asarray([np.random.randn(y, 1) for y in sizes[1:]])
         # 1-n order weights. The zero-based indexing is deceptive here:
         # index zero corresponds to order 1, ind 1 -> ord 2, etc.
         self.weights = np.asarray([[np.random.randn(y, x) for i in range(p)]
-                        for x, y, p in zip(sizes[:-1], sizes[1:], polyorders)])
+                        for x, y, p in zip(sizes[:-1], sizes[1:], self.polyorders)])
         if non_linearity == "sigmoid":
             self.non_linearity = sigmoid
             self.d_non_linearity = sigmoid_prime
