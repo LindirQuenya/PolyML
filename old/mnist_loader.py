@@ -41,7 +41,7 @@ def load_data():
     """
     #f = gzip.open('/Users/grant/cs/neural-networks-and-deep-learning/data/mnist.pkl.gz', 'rb')
     f = gzip.open('/home/kali/Documents/PolyML/nn/mnist.pkl.gz', 'rb')
-    u = pickle._Unpickler(f)
+    u = pickle.Unpickler(f)
     u.encoding = 'latin1'
     # p = u.load()
     # training_data, validation_data, test_data = pickle.load(f)
