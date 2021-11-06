@@ -12,6 +12,7 @@ function usually called by our neural network code.
 # Standard library
 import pickle
 import gzip
+from pathlib import Path
 
 # Third-party libraries
 import numpy as np
@@ -40,7 +41,7 @@ def load_data():
     below.
     """
     #f = gzip.open('/Users/grant/cs/neural-networks-and-deep-learning/data/mnist.pkl.gz', 'rb')
-    f = gzip.open('/home/kali/Documents/PolyML/nn/mnist.pkl.gz', 'rb')
+    f = gzip.open(Path(__file__).parent.absolute()/'mnist.pkl.gz', 'rb')
     u = pickle.Unpickler(f)
     u.encoding = 'latin1'
     # p = u.load()
